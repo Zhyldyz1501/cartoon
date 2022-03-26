@@ -1,24 +1,48 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap";
+import Card from './Components/Card/Card'
+import Search from './Components/Search/Search'
+import Pagination from './Components/Pagination/Pagination'
 
 function App() {
+  let [fetchedData, updateFetchedData] = useState([])
+  let [search, setSearch] = useState('');
+  let [pageNumber, updatePageNumber] = useState(1);
+
+  let { info, results } = fetchedData;
+  let api = `https://rickandmortyapi.com/api/character/?page=${pageNumber}&name=${search}`
+ 
+  // let filteredCard = fetchedData.filter(el => {
+  //   el.name.toLowerCase().includes(search.toLowerCase())
+  // }) 
+  //updateFetchedData(filteredCard)
+  
+  useEffect(() => {
+    (async function () {
+      let data = await fetch(api).then((res) => res.json())
+      console.log(data)
+      updateFetchedData(data)
+    }) ()
+  }, [api])
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1 className="text-center mb-3">Characters</h1>
+      <div className="container">
+        <Search search={search} setSearch={setSearch} updatePageNumber={updatePageNumber}/>
+      <div className="row">
+          Filter component will be placed here
+          <div className="col-lg-8 col-12">
+          <div className="row">
+        <Card result={results} />
+      </div>
     </div>
+  </div>
+  </div>
+</div>
   );
 }
 
